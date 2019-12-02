@@ -1,5 +1,6 @@
 package main
 
+<<<<<<< HEAD
 import(
 	"github.com/gorilla/mux"
 	"net/http"
@@ -44,3 +45,10 @@ func main(){
 
 	http.ListenAndServe(":9090", router)
 }
+=======
+import "fmt"
+
+func main() {
+	fmt.Println("Hello World")
+}
+>>>>>>> 56ea56b700aa8a3c72043eb8bcf110756035c35a
