@@ -1,9 +1,10 @@
 const Sequelize = require('sequelize')
 
-const sequelize = require('../config/DBConfig')
+const sequelize = require('../config/db_config.js')
 
 const { Model } = Sequelize
-
+const { Queue } = require('./queue.model')
+const { User } = require('./user.model')
 class Entry extends Model {}
 Entry.init(
   {
@@ -34,4 +35,4 @@ Entry.init(
 )
 Entry.belongsTo(Queue)
 Entry.belongsTo(User)
-module.exports = User
+module.exports = Entry

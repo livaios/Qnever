@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize')
 
-const sequelize = require('../config/DBConfig')
+const sequelize = require('../config/db_config.js')
 
 const { Model } = Sequelize
 
