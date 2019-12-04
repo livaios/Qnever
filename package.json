@@ -1,0 +1,26 @@
+{
+  "name": "qnever",
+  "version": "1.0.0",
+  "description": "Wait no more with Qnever",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/livaios/Qnever.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/livaios/Qnever/issues"
+  },
+  "homepage": "https://github.com/livaios/Qnever#readme",
+  "dependencies": {
+    "passport": "^0.4.0",
+    "pg": "^7.14.0",
+    "sequelize": "^5.21.2",
+    "sequelize-cli": "^5.5.1"
+  }
+}
