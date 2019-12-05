@@ -23,10 +23,13 @@ sequelize
   .catch(err => {
     console.error('Unable to connect to postgres 😳 .', err)
   })
-//app.use('/api/v1/user', user)
-//app.use('/api/v1/entry', entry)
-//app.use('/api/v1/entity', entity)
-//app.use('/api/v1/queue', queue)
+
+app.use('/api/v1/user', user)
+app.use('/api/v1/entity', entity)
+app.use('/api/v1/queue', queue)
+
+app.use('/api/v1/entry', entry)
+
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static('client/build'))
   app.get('*', (req, res) => {
@@ -42,7 +45,7 @@ sequelize
     console.error('Unable to connect to the database:', err)
   })
 
-const eraseDatabaseOnSync = false
+const eraseDatabaseOnSync = true
 sequelize
   .sync({ force: eraseDatabaseOnSync })
   .then(() => console.log('Synced models with database 💃 .'))

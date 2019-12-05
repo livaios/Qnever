@@ -1,6 +1,7 @@
 const Sequelize = require('sequelize')
 
 const sequelize = require('../config/db_config.js')
+const Entry = require('./entry.model')
 
 const { Model } = Sequelize
 
@@ -20,4 +21,5 @@ User.init(
     timestamps: false
   }
 )
+
 module.exports = User
