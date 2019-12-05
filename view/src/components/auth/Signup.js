@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import Button from 'react-bootstrap/Button';
-import {Redirect} from 'react-router-dom';
 import './Login.css';
 
-class Login extends Component {
+class SignUp extends Component {
     constructor() {
       super();
       this.state = {
@@ -46,9 +45,6 @@ class Login extends Component {
       this.setState({
         password: evt.target.value,
       });
-    }
-    handleSignUp(evt) {
-        return <Redirect to ="/signup"/>
     }
   
     render() {
@@ -95,4 +91,4 @@ class Login extends Component {
     }
   }
   
-  export default Login;
+  export default SignUp;
