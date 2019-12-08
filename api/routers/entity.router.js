@@ -10,7 +10,8 @@ const {
   viewEntities,
   createQueue,
   viewQueue,
-  deleteQueue
+  deleteQueue,
+  next
 } = entityController
 
 router.post('/signup', registerEntity)
@@ -19,4 +20,5 @@ router.post('/viewAll', viewEntities)
 router.post('/createQ', createQueue)
 router.post('/viewMyQ', viewQueue)
 router.post('/deleteQ', deleteQueue)
+router.post('/next', next)
 module.exports = router

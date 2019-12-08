@@ -32,5 +32,5 @@ Queue.init(
   }
 )
 Queue.belongsTo(Entity)
-//Queue.hasMany(Entry)
+Queue.hasMany(Entry)
 module.exports = Queue

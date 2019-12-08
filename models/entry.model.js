@@ -9,17 +9,23 @@ class Entry extends Model {}
 Entry.init(
   {
     position: {
-      type: Sequelize.INTEGER
+      type: Sequelize.INTEGER,
+      allowNull: false
     },
     is_done: {
       type: Sequelize.BOOLEAN,
       defaultValue: false
     },
     entry_time: {
-      type: Sequelize.DATE
+      type: Sequelize.DATE,
+      allowNull: false
     },
     completion_time: {
       type: Sequelize.DATE
+    },
+    UserId: {
+      type: Sequelize.INTEGER,
+      allowNull: false
     }
   },
   {
@@ -27,5 +33,4 @@ Entry.init(
     timestamps: false
   }
 )
-
 module.exports = Entry

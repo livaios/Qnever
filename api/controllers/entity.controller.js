@@ -1,6 +1,7 @@
 const Sequelize = require('sequelize')
 const Entity = require('../../models/entity.model')
 const Queue = require('../../models/queue.model')
+const Entry = require('../../models/entry.model')
 const { Op } = Sequelize
 
 const registerEntity = async (req, res) => {
@@ -108,11 +109,59 @@ const deleteQueue = async (req, res) => {
     return res.json('Something went wrong')
   }
 }
+const next = async (req, res) => {
+  try {
+    const { queue_id, entity_id } = req.body
+    const queue = await Queue.findByPk(queue_id)
+    if (entity_id != queue.EntityId) {
+      return res.json('Unauthorized Entity')
+    }
+    if (queue.head > queue.length) {
+      return res.json('Empty queye')
+    }
+    const up_entry = await Entry.update(
+      {
+        is_done: true,
+        completion_time: new Date()
+      },
+      {
+        returning: true,
+        where: {
+          position: queue.head,
+          QueueId: queue_id
+        }
+      }
+    )
+
+    const getQ = await Entry.findOne({
+      where: {
+        position: queue.head,
+        QueueId: queue_id
+      }
+    })
+    const dop =
+      Math.abs(getQ.entry_time.getTime() - getQ.completion_time.getTime()) /
+      (2 * 60 * 1000)
+    console.log(dop)
+    const up_queue = await Queue.update(
+      {
+        head: ++queue.head,
+        avg_time_slot: dop
+      },
+      { returning: true, where: { id: queue_id } }
+    )
+    return res.send({ up_entry, up_queue })
+  } catch (e) {
+    console.log(e)
+    return res.json('Something went wrong')
+  }
+}
 module.exports = {
   registerEntity,
   loginEntity,
   viewEntities,
   createQueue,
   viewQueue,
-  deleteQueue
+  deleteQueue,
+  next
 }
