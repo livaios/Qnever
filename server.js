@@ -6,13 +6,14 @@ const app = express()
 
 const sequelize = require('./config/db_config')
 const entity = require('../Qnever/api/routers/entity.router')
-const entry = require('../Qnever/api/routers/entry.router')
-const queue = require('../Qnever/api/routers/queue.router')
 const user = require('../Qnever/api/routers/user.router')
+
+const loggerMiddleware = require('./api/middleware/logger')
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cors())
+app.use(loggerMiddleware)
 app.use(passport.initialize())
 
 sequelize
@@ -26,9 +27,6 @@ sequelize
 
 app.use('/api/v1/user', user)
 app.use('/api/v1/entity', entity)
-app.use('/api/v1/queue', queue)
-
-app.use('/api/v1/entry', entry)
 
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static('client/build'))
