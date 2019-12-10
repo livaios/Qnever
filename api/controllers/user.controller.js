@@ -106,6 +106,9 @@ const checkPos = async (req, res) => {
     const entry = await Entry.findOne({
       where: { UserId: user_id, QueueId: queue_id }
     })
+    if (entry.is_done) {
+      return res.json('Your turn has passeds')
+    }
     const queue = await Queue.findByPk(queue_id)
     const people_remaining = entry.position - queue.head
     let waiting_time
