@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/livaios/Qnever#readme",
   "dependencies": {
+    "cookie-parser": "^1.4.4",
+    "express-session": "^1.17.0",
     "moment": "^2.24.0",
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",

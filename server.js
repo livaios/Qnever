@@ -15,6 +15,10 @@ app.use(express.urlencoded({ extended: false }))
 app.use(cors())
 app.use(loggerMiddleware)
 app.use(passport.initialize())
+app.use(passport.session())
+
+app.use('/api/v1/user', user)
+app.use('/api/v1/entity', entity)
 
 sequelize
   .authenticate()
@@ -24,25 +28,6 @@ sequelize
   .catch(err => {
     console.error('Unable to connect to postgres 😳 .', err)
   })
-
-app.use('/api/v1/user', user)
-app.use('/api/v1/entity', entity)
-
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static('client/build'))
-  app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'))
-  })
-}
-sequelize
-  .authenticate()
-  .then(() => {
-    console.log('Connection has been established successfully.')
-  })
-  .catch(err => {
-    console.error('Unable to connect to the database:', err)
-  })
-
 const eraseDatabaseOnSync = false
 sequelize
   .sync({ force: eraseDatabaseOnSync })
