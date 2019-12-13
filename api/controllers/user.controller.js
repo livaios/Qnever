@@ -1,7 +1,8 @@
 const Sequelize = require('sequelize')
 const User = require('../../models/user.model')
 const Queue = require('../../models/queue.model')
-const passport = require('../../config/passport')
+// const passport = require('passport')
+const jwt = require('jsonwebtoken')
 
 const Entry = require('../../models/entry.model')
 
@@ -42,19 +43,21 @@ const loginUser = async (req, res) => {
       return res.json('Username invalid')
     }
     const password_valid = await User.findOne({
-      where: { username, password },
-      attributes: ['password']
+      where: { username, password }
     })
     if (!password_valid) {
       return res.json('Incorrect password')
     }
-    return res.send('jwt!!')
-    // jwt
+    const payLoad = { userId: password_valid.id, userType: 'user' }
+    const token = jwt.sign(payLoad, 'secret', {
+      expiresIn: 3231231231231 // expires in 24 hours
+    })
+    return res.status(200).send({ auth: true, token, password_valid })
   } catch (e) {
+    console.log(e)
     return res.json('Something went wrong')
   }
 }
-
 const viewUsers = async (req, res) => {
   try {
     const users = await User.findAll()
@@ -65,20 +68,29 @@ const viewUsers = async (req, res) => {
 }
 const joinQueue = async (req, res) => {
   try {
-    const { user_id, queue_id } = req.body
+    const decode = jwt.verify(req.headers.authorization.split(' ')[1], 'secret')
+    const { userType, userId } = decode
+    if (userType != 'user') {
+      return res.json('unauthorized')
+    }
+    const check_owner = await Entity.findByPk(userId)
+    if (!check_owner) {
+      return res.json('invalid owner id')
+    }
+    const { queue_id } = req.body
     const queue = await Queue.findByPk(queue_id)
     if (!queue) {
       return res.json('Queue not found')
     }
     const entries = await Entry.findOne({
-      where: { UserId: user_id, QueueId: queue_id }
+      where: { UserId: userId, QueueId: queue_id }
     })
     if (entries) {
       return res.json('Already registered in queue')
     }
     const updated_length = ++queue.length
     const entry = await Entry.create({
-      UserId: user_id,
+      UserId: userId,
       QueueId: queue_id,
       entry_time: await new Date(),
       position: updated_length
@@ -102,10 +114,22 @@ const joinQueue = async (req, res) => {
 }
 const checkPos = async (req, res) => {
   try {
-    const { user_id, queue_id } = req.body
+    const decode = jwt.verify(req.headers.authorization.split(' ')[1], 'secret')
+    const { userType, userId } = decode
+    if (userType != 'user') {
+      return res.json('unauthorized')
+    }
+    const check_owner = await Entity.findByPk(userId)
+    if (!check_owner) {
+      return res.json('invalid owner id')
+    }
+    const { queue_id } = req.body
     const entry = await Entry.findOne({
-      where: { UserId: user_id, QueueId: queue_id }
+      where: { UserId: userId, QueueId: queue_id }
     })
+    if (entry.is_done) {
+      return res.json('Your turn has passeds')
+    }
     const queue = await Queue.findByPk(queue_id)
     const people_remaining = entry.position - queue.head
     let waiting_time

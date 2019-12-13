@@ -1,15 +1,13 @@
-const JwtStrategy = require('passport-jwt').Strategy
-const { ExtractJwt } = require('passport-jwt')
-const secret = require('./keys').secretOrKey
-
+const passportJWT = require('passport-jwt')
+const JWTStrategy = passportJWT.Strategy
+const ExtractJWT = passportJWT.ExtractJwt
+const passport = require('passport')
 const opts = {}
-opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken()
-opts.secretOrKey = secret
-module.exports = passport => {
-  passport.use(
-    new JwtStrategy(opts, async (jwt_payload, done) => {
-      const { userID, userType } = jwt_payload
-      return done(null, { userID, userType })
-    })
-  )
-}
+opts.jwtFromRequest = ExtractJWT.fromAuthHeaderAsBearerToken()
+opts.secretOrKey = 'secret'
+passport.use(
+  new JWTStrategy(opts, async (jwt_payload, done) => {
+    const { userID, userType } = jwt_payload
+    return done(null, { userID, userType })
+  })
+)

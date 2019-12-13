@@ -2,6 +2,8 @@ const Sequelize = require('sequelize')
 const Entity = require('../../models/entity.model')
 const Queue = require('../../models/queue.model')
 const Entry = require('../../models/entry.model')
+const passport = require('passport')
+const jwt = require('jsonwebtoken')
 const { Op } = Sequelize
 
 const registerEntity = async (req, res) => {
@@ -39,13 +41,17 @@ const loginEntity = async (req, res) => {
       return res.json('Username invalid')
     }
     const password_valid = await Entity.findOne({
-      where: { username, password },
-      attributes: ['password']
+      where: { username, password }
     })
     if (!password_valid) {
       return res.json('Incorrect password')
     }
-    return res.send('jwt!!')
+    console.log(password_valid)
+    const payLoad = { userId: password_valid.id, userType: 'admin' }
+    const token = jwt.sign(payLoad, 'secret', {
+      expiresIn: 3231231231231 // expires in 24 hours
+    })
+    return res.status(200).send({ auth: true, token, payLoad })
     // jwt
   } catch (e) {
     return res.json('Something went wrong')
@@ -62,9 +68,13 @@ const viewEntities = async (req, res) => {
 }
 const createQueue = async (req, res) => {
   try {
-    const { name, owner_id } = req.body
-    //val
-    const check_owner = await Entity.findByPk(owner_id)
+    const decode = jwt.verify(req.headers.authorization.split(' ')[1], 'secret')
+    const { userType, userId } = decode
+    const { name } = req.body
+    if (userType != 'admin') {
+      return res.json('unauthorized')
+    }
+    const check_owner = await Entity.findByPk(userId)
     if (!check_owner) {
       return res.json('invalid owner id')
     }
@@ -79,23 +89,37 @@ const createQueue = async (req, res) => {
 }
 const viewQueue = async (req, res) => {
   try {
-    const { owner_id } = req.body
-    const check_owner = await Entity.findByPk(owner_id)
+    const decode = jwt.verify(req.headers.authorization.split(' ')[1], 'secret')
+    const { userType, userId } = decode
+    console.log(userType, userId)
+    if (userType != 'admin') {
+      return res.json('unauthorized')
+    }
+    const check_owner = await Entity.findByPk(userId)
     if (!check_owner) {
       return res.json('invalid owner id')
     }
-    //val
     const queue = await Queue.findAll({
-      where: { EntityId: owner_id }
+      where: { EntityId: userId }
     })
     return res.send(queue)
   } catch (e) {
+    console.log(e)
     return res.json('Something went wrong')
   }
 }
 const deleteQueue = async (req, res) => {
   try {
     const { id } = req.body
+    const decode = jwt.verify(req.headers.authorization.split(' ')[1], 'secret')
+    const { userType, userId } = decode
+    if (userType != 'admin') {
+      return res.json('unauthorized')
+    }
+    const check_owner = await Entity.findByPk(userId)
+    if (!check_owner) {
+      return res.json('invalid owner id')
+    }
     const check_queue = await Queue.findByPk(id)
     if (!check_queue) {
       return res.json('invalid queue id')
@@ -111,8 +135,13 @@ const deleteQueue = async (req, res) => {
 }
 const next = async (req, res) => {
   try {
-    const { queue_id, entity_id } = req.body
-    const queue = await Queue.findByPk(queue_id)
+    const decode = jwt.verify(req.headers.authorization.split(' ')[1], 'secret')
+    const { userType, userId } = decode
+    if (userType != 'admin') {
+      return res.json('unauthorized')
+    }
+    const { queue_id } = req.body
+    const queue = await Queue.findByPk(userId)
     if (entity_id != queue.EntityId) {
       return res.json('Unauthorized Entity')
     }
