@@ -1,14 +1,26 @@
 {
-  "app": {
-    "port": 5000
+  "development": {
+    "config_id": "development",
+    "app_name": "Qnever",
+    "app_desc": "Never wait in line again",
+    "node_port": 3000,
+    "json_indentation": 4,
+    "database": "Qnever"
   },
   "db": {
     "host": "localhost",
     "port": 5432,
     "name": "Qnever",
-    "url": "postgres://postgres:linalina@localhost:5432/Qnever"
+    "url": "postgres://postgres:badr@localhost:5432/Qnever",
+    "dialect": "postgres"
   },
   "token": {
     "secret": "cakes"
+  }, 
+  "production":{
+    "config_id": "production",
+    "node_port":3000,
+    "database":"Qnever"
   }
 }
+
