@@ -18,9 +18,19 @@
   },
   "homepage": "https://github.com/livaios/Qnever#readme",
   "dependencies": {
+    "config": "^3.2.4",
+    "cookie-parser": "^1.4.4",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "express-session": "^1.17.0",
+    "memory-cache": "^0.2.0",
+    "moment": "^2.24.0",
     "passport": "^0.4.0",
+    "passport-jwt": "^4.0.0",
     "pg": "^7.14.0",
+    "redis": "^2.8.0",
     "sequelize": "^5.21.2",
     "sequelize-cli": "^5.5.1"
-  }
+  },
+  "devDependencies": {}
 }

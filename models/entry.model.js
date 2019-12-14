@@ -8,24 +8,24 @@ const { User } = require('./user.model')
 class Entry extends Model {}
 Entry.init(
   {
-    username: {
-      type: Sequelize.STRING,
-      unique: true
-    },
-    password: {
-      type: Sequelize.STRING
-    },
     position: {
-      type: Sequelize.INTEGER
+      type: Sequelize.INTEGER,
+      allowNull: false
     },
     is_done: {
-      type: Sequelize.BOOLEAN
+      type: Sequelize.BOOLEAN,
+      defaultValue: false
     },
     entry_time: {
-      type: Sequelize.TIME
+      type: Sequelize.DATE,
+      allowNull: false
     },
     completion_time: {
-      type: Sequelize.TIME
+      type: Sequelize.DATE
+    },
+    UserId: {
+      type: Sequelize.INTEGER,
+      allowNull: false
     }
   },
   {
@@ -33,6 +33,4 @@ Entry.init(
     timestamps: false
   }
 )
-Entry.belongsTo(Queue)
-Entry.belongsTo(User)
 module.exports = Entry
