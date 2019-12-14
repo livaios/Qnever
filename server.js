@@ -5,10 +5,9 @@ const passport = require('passport')
 const app = express()
 
 const sequelize = require('./config/db_config')
-const entity = require('../Qnever/api/routers/entity.router')
-const user = require('../Qnever/api/routers/user.router')
+const entity = require('./api/routers/entity.router')
+const user = require('./api/routers/user.router')
 
-const loggerMiddleware = require('./api/middleware/logger')
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))

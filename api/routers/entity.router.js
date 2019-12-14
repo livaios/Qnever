@@ -12,6 +12,7 @@ const {
   createQueue,
   viewQueue,
   deleteQueue,
+  viewAllQueues,
   next
 } = entityController
 
@@ -32,10 +33,12 @@ router.post(
   viewQueue,
   passport.authenticate('jwt', { session: true })
 )
-router.post(
+router.post( 
   '/deleteQ',
   deleteQueue,
   passport.authenticate('jwt', { session: true })
 )
+router.post('/viewAllQueues',viewAllQueues,  passport.authenticate('jwt', { session: true }))
+
 router.post('/next', next, passport.authenticate('jwt', { session: true }))
 module.exports = router
