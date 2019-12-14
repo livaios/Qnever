@@ -73,10 +73,6 @@ const joinQueue = async (req, res) => {
     if (userType != 'user') {
       return res.json('unauthorized')
     }
-    const check_owner = await Entity.findByPk(userId)
-    if (!check_owner) {
-      return res.json('invalid owner id')
-    }
     const { queue_id } = req.body
     const queue = await Queue.findByPk(queue_id)
     if (!queue) {
@@ -119,26 +115,35 @@ const checkPos = async (req, res) => {
     if (userType != 'user') {
       return res.json('unauthorized')
     }
-    const check_owner = await Entity.findByPk(userId)
-    if (!check_owner) {
-      return res.json('invalid owner id')
-    }
-    const { queue_id } = req.body
-    const entry = await Entry.findOne({
-      where: { UserId: userId, QueueId: queue_id }
+    const entries = await Entry.findAll({
+      where: { UserId: userId, is_done:false }
     })
-    if (entry.is_done) {
-      return res.json('Your turn has passeds')
+    if(!entries){
+      
+      return res.json('no entries')
     }
-    const queue = await Queue.findByPk(queue_id)
-    const people_remaining = entry.position - queue.head
-    let waiting_time
-    if (!queue.avg_wait_slot) {
-      waiting_time = people_remaining * queue.avg_wait_slot
+    let qT =[]
+    for(let i=0;i<entries.length;i++){
+      qT.push(await Queue.findByPk(entries[i].QueueId))
     }
-    return res.json({ people_remaining, waiting_time })
+
+    if(qT.length===0){
+      
+      return res.json('no queues')
+    }
+    let queues = []
+    let people_remaining = []
+    let waiting_time = []
+    for(let i=0;i<qT.length;i++){
+      people_remaining.push(entries[i].position-qT[i].head)
+      if(!qT[i].avg_wait_slot)
+        waiting_time.push(people_remaining[i]*qT[i].avg_wait_slot)
+      else
+      waiting_time.push(null)
+      queues.push({queue:qT[i],people:people_remaining[i],wait:waiting_time[i]})
+    }
+    return res.json( queues )
   } catch (e) {
-    console.log(e)
     return res.json('Something went wrong')
   }
 }

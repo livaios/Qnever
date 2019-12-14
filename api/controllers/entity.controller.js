@@ -109,6 +109,23 @@ const viewQueue = async (req, res) => {
     return res.json('Something went wrong')
   }
 }
+const viewAllQueues = async (req, res) => {
+  try {
+    const decode = jwt.verify(req.headers.authorization.split(' ')[1], 'secret')
+
+    const { userType, userId } = decode
+    console.log(userType, userId)
+    const check_owner = await Entity.findByPk(userId)
+    if (!check_owner) {
+      return res.json('invalid owner id')
+    }
+    const queue = await Queue.findAll({})
+    return res.send(queue)
+  } catch (e) {
+    console.log(e)
+    return res.json('Something went wrong')
+  }
+}
 const deleteQueue = async (req, res) => {
   try {
     const { id } = req.body
@@ -142,11 +159,11 @@ const next = async (req, res) => {
       return res.json('unauthorized')
     }
     const { queue_id } = req.body
-    const queue = await Queue.findByPk(userId)
+    const queue = await Queue.findByPk(queue_id)
     if (userId != queue.EntityId) {
       return res.json('Unauthorized Entity')
     }
-    if (queue.head > queue.length) {
+    if (queue.head > queue.length || queue.head === 0) {
       return res.json('Empty queye')
     }
     const up_entry = await Entry.update(
@@ -162,13 +179,14 @@ const next = async (req, res) => {
         }
       }
     )
-
+    console.log(up_entry)
     const getQ = await Entry.findOne({
       where: {
         position: queue.head,
         QueueId: queue_id
       }
     })
+    console.log(getQ)
     const dop =
       Math.abs(getQ.entry_time.getTime() - getQ.completion_time.getTime()) /
       (2 * 60 * 1000)
@@ -193,5 +211,6 @@ module.exports = {
   createQueue,
   viewQueue,
   deleteQueue,
-  next
+  next,
+  viewAllQueues
 }
