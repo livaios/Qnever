@@ -10,3 +10,4 @@ To run Docker, we have a docker file describing our backend as a docker image an
 The Docker-Compose describes the backing service dependencies between the all docker images with each other. Each image is run in a container. We execute "$docker-compose up" and then you will see logs of executed files 
 ---------------------------------------------------------------------------------------------------------------------------
 To run the composed file we simply "$docker run qnever-app".
+---------------------------------------------------------------------------------------------------------------------------
