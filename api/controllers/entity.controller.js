@@ -80,10 +80,11 @@ const createQueue = async (req, res) => {
     }
     const queue = await Queue.create({
       name,
-      EntityId: owner_id
+      EntityId: userId
     })
     return res.send(queue)
   } catch (e) {
+    console.log(e)
     return res.json('Something went wrong')
   }
 }
@@ -142,7 +143,7 @@ const next = async (req, res) => {
     }
     const { queue_id } = req.body
     const queue = await Queue.findByPk(userId)
-    if (entity_id != queue.EntityId) {
+    if (userId != queue.EntityId) {
       return res.json('Unauthorized Entity')
     }
     if (queue.head > queue.length) {
