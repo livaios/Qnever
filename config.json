@@ -1,0 +1,14 @@
+{
+  "app": {
+    "port": 5000
+  },
+  "db": {
+    "host": "localhost",
+    "port": 5432,
+    "name": "Qnever",
+    "url": "postgres://postgres:linalina@localhost:5432/Qnever"
+  },
+  "token": {
+    "secret": "cakes"
+  }
+}

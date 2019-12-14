@@ -110,8 +110,8 @@ const viewQueue = async (req, res) => {
   }
 }
 const viewAllQueues = async (req, res) => {
-  try {    const decode = jwt.verify(req.headers.authorization.split(' ')[1], 'secret')
-
+  try {
+    const decode = jwt.verify(req.headers.authorization.split(' ')[1], 'secret')
 
     const { userType, userId } = decode
     console.log(userType, userId)
@@ -163,7 +163,7 @@ const next = async (req, res) => {
     if (userId != queue.EntityId) {
       return res.json('Unauthorized Entity')
     }
-    if (queue.head > queue.length||queue.head===0) {
+    if (queue.head > queue.length || queue.head === 0) {
       return res.json('Empty queye')
     }
     const up_entry = await Entry.update(
@@ -179,7 +179,7 @@ const next = async (req, res) => {
         }
       }
     )
-      console.log(up_entry)
+    console.log(up_entry)
     const getQ = await Entry.findOne({
       where: {
         position: queue.head,

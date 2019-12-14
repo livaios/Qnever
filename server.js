@@ -4,17 +4,17 @@ const passport = require('passport')
 
 const app = express()
 
+const loggerMiddleware = require('./middleware/logger')
 const sequelize = require('./config/db_config')
 const entity = require('./api/routers/entity.router')
 const user = require('./api/routers/user.router')
 
-
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cors())
-app.use(loggerMiddleware)
 app.use(passport.initialize())
 app.use(passport.session())
+app.use(loggerMiddleware)
 
 app.use('/api/v1/user', user)
 app.use('/api/v1/entity', entity)
